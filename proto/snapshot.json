@@ -1,0 +1,24 @@
+{
+  "module": "buf.build/photon-hq/imessage:d271d841bb604a8ea53556dfb1a77ac4",
+  "source": "@photon-ai/advanced-imessage@2.4.0/proto (package prepublishOnly exports this exact BSR commit)",
+  "sha256": {
+    "google/api/annotations.proto": "e79ea741cb605a65e78ca322174764a4af9fde1962c1631e12b84c4934ba9a6c",
+    "google/api/http.proto": "ead99129aa15dd5f6233942030c72eec33bc0d7b1c7c260dc143293ef66c5b78",
+    "photon/imessage/v1/address_service.proto": "824cb8dbc6c0e52c41b942d0714d0794df86373272f84bb3e0692d16bde807e8",
+    "photon/imessage/v1/address_types.proto": "47e9484e7feaa82dff9567e7925b77712e63269b5ad83ed512f2a3eac9a26d82",
+    "photon/imessage/v1/attachment_service.proto": "8332047eae29f508b4b0585e2c8079994068bb52704c8e35006403b14cbd91e9",
+    "photon/imessage/v1/attachment_types.proto": "722a1ad8d914f9343e8ade3475b7669f794850df0e8e477561bbd21eed2b4836",
+    "photon/imessage/v1/chat_service.proto": "1a98c5fb733b2ea96c0a8c3d7718fe68faddfa6c955d6fe96e4c0c09bcb9e9aa",
+    "photon/imessage/v1/chat_types.proto": "c21f4c2ad750547d6da5b2d61676b34d76bffd80ec0d3529ebfcdb46a5d06dda",
+    "photon/imessage/v1/event_service.proto": "786b228bcce0d8c835ce65342f475cd1ac37d17b8604e7bcd1c0278c95592e6f",
+    "photon/imessage/v1/group_service.proto": "de1aea3da3ad39df86357ef4d1b965da2ab998d1f500934758bff0f96d73159e",
+    "photon/imessage/v1/group_types.proto": "b0a6574befd21e5b9be649e483dc01fcf28853b83459bea0a62ac7a739c204e9",
+    "photon/imessage/v1/location_service.proto": "b5bd49ead7fe3bdd76bdb9eaeace5ee4b89ceb45b09eabe4111f484e596a24c4",
+    "photon/imessage/v1/location_types.proto": "2a1e06698ef62fab475b2bb65b850875280381e4b5c15e7a39ba9e8fe9d244d7",
+    "photon/imessage/v1/message_service.proto": "c9c90fd6b905a6f58f7e5b4d531490a187bcc0caab5fb393e7bed160816e376a",
+    "photon/imessage/v1/message_types.proto": "e0bf8e5a17c45032b598cf15a1412bc7f5d976e8e69539d60d5c122737b8ff42",
+    "photon/imessage/v1/poll_service.proto": "f6cf116523fb0e39d510037ad078abee823304ce41ff0ad4b4bc349bdb642278",
+    "photon/imessage/v1/poll_types.proto": "a69b22ed925e5d4b7ebfe9ec81e520a9bdbfd0f44c6b62e03a7fba89a5ab389e",
+    "photon/imessage/v1/streaming.proto": "ce585048394e15fd4a439329dfc4c79934fa7fd2a19add155e892ee49c8c95b4"
+  }
+}

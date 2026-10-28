@@ -1,0 +1,5 @@
+# Copy to .dev.vars in this directory. Never commit real credentials.
+SPECTRUM_PROJECT_ID="replace-with-project-id"
+SPECTRUM_PROJECT_SECRET="replace-with-project-secret"
+# Literal legacy/native Spectrum secret, NOT a Standard Webhooks whsec_ key.
+SPECTRUM_WEBHOOK_SECRET="replace-with-legacy-webhook-secret"

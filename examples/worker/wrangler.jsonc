@@ -1,0 +1,5 @@
+{
+  "name": "spectrum-webhook-example",
+  "main": "worker.ts",
+  "compatibility_date": "2026-07-30"
+}
