@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { Code, ConnectError } from "@connectrpc/connect";
-import { createIMessageRpc } from "../src/grpc.js";
+import { createIMessageRpc } from "@spectrum-cloudflare/imessage/grpc";
 import { grpcBigint, grpcBytes, grpcPeer, type GrpcObservation } from "./fixtures/grpc-peer.js";
 
 function fixture(mode = "ok", token: string | ((signal?: AbortSignal) => Promise<string>) = "test-token") {

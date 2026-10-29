@@ -1,4 +1,4 @@
-import { SpectrumApi } from './api.js';
+import { SpectrumApi } from '@spectrum-cloudflare/api';
 import { createIMessageRpc, type IMessageRpc } from './grpc.js';
 import { ProviderDownloads } from './runtime-downloads.js';
 
@@ -20,6 +20,7 @@ export interface SpectrumLineOptions {
 
 interface Line {
   readonly mode: 'shared' | 'dedicated';
+  readonly key?: string;
   readonly phone: string;
   readonly baseUrl: string;
   readonly rpc: IMessageRpc;
@@ -29,7 +30,7 @@ function record(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
-function parseTokens(value: unknown) {
+function parseTokens(value: unknown, previous: readonly Line[]) {
   if (!record(value) || typeof value.expiresIn !== 'number' || !Number.isFinite(value.expiresIn) || value.expiresIn <= 0) {
     throw new Error('Invalid Spectrum token payload: expected a positive finite expiresIn');
   }
@@ -45,7 +46,9 @@ function parseTokens(value: unknown) {
     if (!/^[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?$/.test(key) || typeof token !== 'string' || !token) {
       throw new Error('Invalid dedicated iMessage instance credentials');
     }
-    const phone = value.numbers[key];
+    // An authenticated instance may temporarily lose its number. Only an
+    // already assigned instance can retain a phone; auth still owns retirement.
+    const phone = value.numbers[key] ?? previous.find(line => line.mode === 'dedicated' && line.key === key)?.phone;
     if (phone === null || phone === undefined) {
       continue;
     }
@@ -171,18 +174,18 @@ export class SpectrumLines {
   private async mint(): Promise<void> {
     const data = parseTokens(await this.options.api.request('POST', '/projects/{projectId}/imessage/tokens', {
       signal: this.signal,
-    }));
+    }), this.lines);
     this.assertOpen();
     const next = data.entries.map(entry => {
       const baseUrl = data.type === 'shared'
         ? this.options.sharedBaseUrl ?? 'https://imessage.spectrum.photon.codes'
         : `https://${entry.key}.imsg.photon.codes`;
-      const existing = this.lines.find(line => line.mode === data.type && line.phone === entry.phone && line.baseUrl === baseUrl);
+      const existing = this.lines.find(line => line.mode === data.type && line.key === entry.key && line.phone === entry.phone && line.baseUrl === baseUrl);
       if (existing) {
         return existing;
       }
       const credentialKey = `${data.type}:${entry.key}`;
-      return { mode: data.type, phone: entry.phone, baseUrl, rpc: createIMessageRpc({
+      return { mode: data.type, key: entry.key, phone: entry.phone, baseUrl, rpc: createIMessageRpc({
         baseUrl,
         signal: this.signal,
         ...(this.options.fetch ? { fetch: this.options.fetch } : {}),

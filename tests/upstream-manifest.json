@@ -1,0 +1,25 @@
+{
+  "repository": "https://github.com/photon-hq/spectrum-ts",
+  "revision": "d9e39089dc3d1c6f4536826f5ca50798856eecab",
+  "license": "MIT",
+  "copyright": "Copyright (c) 2025 Photon AI",
+  "hashAlgorithm": "sha256",
+  "sources": [
+    { "path": "packages/imessage/test/space.test.ts", "sha256": "7545ab7e3140e28a5ea85b72826ddeda738cf32c0c9ae76392537e4617bab132", "portedTo": "space.test.ts", "instances": 9 },
+    { "path": "packages/imessage/test/auth.test.ts", "sha256": "e4ad0e248c4cded5ef62e66bd7305b04cf457c5db4aca38b086cd2f8034d10b5", "portedTo": "auth.test.ts", "instances": 8 },
+    { "path": "packages/imessage/test/remote/reactions.test.ts", "sha256": "21004506d1b57416cc27fb5fe577e9c254971b462b3fdadb95a910c87a98ddb1", "portedTo": "actions.test.ts", "instances": 3 },
+    { "path": "packages/imessage/test/remote/unsend.test.ts", "sha256": "9b1c6effaf6d9234d8e2228fd9db677336d4de559c0d6d9913f3f0d2c682b395", "portedTo": "actions.test.ts", "instances": 5 },
+    { "path": "packages/core/test/core/send-read.test.ts", "sha256": "6c353f211f820f5ee821b907e3a25e508a33adec4823bfc138e2520c527e1b39", "portedTo": "core-actions.test.ts", "instances": 2 },
+    { "path": "packages/core/test/core/send-unsend.test.ts", "sha256": "72de4a058e04a66397c7f78b22f5fb422c1e772350a4fea59b9e3f1799ffb866", "portedTo": "core-actions.test.ts", "instances": 3 },
+    { "path": "packages/core/test/core/spectrum.startup.test.ts", "sha256": "829e4470955c7b9e0bb90f4c35c0c824b97445f937b096c531758184d15e5b71", "portedTo": "core-actions.test.ts", "instances": 2 },
+    { "path": "packages/core/test/core/spectrum.shutdown.test.ts", "sha256": "4e0f5e197eb6332232f6c4259df31d3becba7b7174d42c7bdf6668180409704c", "portedTo": "core-actions.test.ts", "instances": 2 },
+    { "path": "packages/core/test/webhook/verify.test.ts", "sha256": "b0c515ebf7726c7c3e07932ebde16a16759b0dba2be3be3662740ebb5a04b8e9", "portedTo": "verify.test.ts", "instances": 11 },
+    { "path": "packages/core/test/webhook/spectrum.test.ts", "sha256": "4ea50db18e76541ad4c3b52486feb5baaa3b46b0b60e4f8fa3538469a481e39a", "portedTo": "webhook.test.ts", "instances": 4, "localExtensionInstances": 4 },
+    { "path": "packages/spectrum-ts/test/providers-shims.test.ts", "sha256": "96c52740566aafa1323c71ea364dcd8ed3072f56c480571ad28c21c4a5a70cc1", "portedTo": "exports.test.ts", "instances": 3 },
+    { "path": "packages/spectrum-ts/test/imessage-package-boundary.test.ts", "sha256": "d5fbb74e0837933a6a720248e2481b6d75b6f0343880ef93b754f8566d964716", "portedTo": "exports.test.ts", "instances": 2 },
+    { "path": "packages/core/test/webhook/deserialize.test.ts", "sha256": "1cdca5b2db04003d3185498d26a75807c2bd0cecc7e1895f97f4342382a7fbf0", "disposition": "reviewed; partial analogous coverage in existing local tests, not an adopted upstream test" },
+    { "path": "packages/imessage/test/remote/inbound.test.ts", "sha256": "b655e8314df039587df42215c2f93ee6ae9e2b90bcaca8dfca31a108a5f25da0", "disposition": "reviewed; native part ordering has existing local tests; provider inbound stream absent" },
+    { "path": "packages/imessage/test/remote/message-metadata-integration.test.ts", "sha256": "28d45bfadd5fc65f4079e4f3e8ef0a5e771a76cea0c6a848b91282a2625ce4ad", "disposition": "reviewed; full metadata and cache-first behavior absent" },
+    { "path": "packages/core/test/content/text.test.ts", "sha256": "7f3ff92f1ad7fab4b2165c04dc03ed16d6e75e88b64843593aada13256fe58fc", "disposition": "reviewed; synchronous text constructor is not the upstream builder/stream API" }
+  ]
+}

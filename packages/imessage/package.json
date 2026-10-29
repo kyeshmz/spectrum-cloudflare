@@ -1,0 +1,29 @@
+{
+  "name": "@spectrum-cloudflare/imessage",
+  "version": "0.0.0",
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" },
+    "./grpc": { "types": "./dist/grpc.d.ts", "import": "./dist/grpc.js" },
+    "./proto/*": { "types": "./dist/generated/photon/imessage/v1/*_pb.d.ts", "import": "./dist/generated/photon/imessage/v1/*_pb.js" }
+  },
+  "files": ["dist", "proto"],
+  "repository": { "type": "git", "url": "git+https://github.com/kyeshmz/spectrum-cloudflare.git", "directory": "packages/imessage" },
+  "homepage": "https://github.com/kyeshmz/spectrum-cloudflare#readme",
+  "bugs": { "url": "https://github.com/kyeshmz/spectrum-cloudflare/issues" },
+  "scripts": {
+    "build": "node ../../scripts/build-package.mjs .",
+    "check-types": "tsc -p tsconfig.json",
+    "prepack": "pnpm --dir ../.. --filter @spectrum-cloudflare/imessage... run build"
+  },
+  "dependencies": {
+    "@spectrum-cloudflare/api": "workspace:*",
+    "@spectrum-cloudflare/webhooks": "workspace:*",
+    "@bufbuild/protobuf": "2.16.0",
+    "@connectrpc/connect": "2.3.0",
+    "@connectrpc/connect-web": "2.3.0"
+  }
+}

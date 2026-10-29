@@ -1,9 +1,9 @@
-import { SpectrumApi, SpectrumApiError } from '../../src/api.js';
+import { SpectrumApi, SpectrumApiError } from '@spectrum-cloudflare/api';
 import {
   verifyLegacySpectrumWebhook,
   verifyStandardWebhook,
   WebhookVerificationError,
-} from '../../src/webhooks.js';
+} from '@spectrum-cloudflare/webhooks';
 
 // Public, deterministic test credentials only; never contact a Photon endpoint.
 const api = new SpectrumApi({

@@ -23,8 +23,8 @@ The checked-in `spec/spectrum-openapi.json` is the live external API 1.0.0 snaps
 `8aaa5c842a429d8e07b738418a76f155ea67ddc0128896d7281884c34822c3d3`.
 No Beta sources were used. No authenticated API calls were made.
 
-`node scripts/generate-api.mjs` regenerates `src/api-types.ts` and
-`src/api-routes.ts` from that snapshot without network access or dependencies.
+`node scripts/generate-api.mjs` regenerates `packages/api/src/api-types.ts` and
+`packages/api/src/api-routes.ts` from that snapshot without network access or dependencies.
 `node scripts/generate-api.mjs --check` verifies both generated outputs.
 To intentionally update the contract, download and review a new official snapshot,
 then pass its local filename to the generator. Update this revision record too.

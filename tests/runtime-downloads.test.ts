@@ -1,6 +1,6 @@
 import { createServer, type Server } from 'node:http';
 import { afterEach, describe, expect, it } from 'vitest';
-import { createSpectrum } from '../src/index.js';
+import { createSpectrum } from '@spectrum-cloudflare/imessage';
 import { runtimeGrpcPeer } from './fixtures/runtime-grpc-peer.js';
 
 const servers = new Set<Server>();

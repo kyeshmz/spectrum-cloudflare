@@ -3,11 +3,11 @@ import { build } from 'esbuild';
 import { Miniflare } from 'miniflare';
 import { expect, it } from 'vitest';
 
-it('bundles every root export as ordinary browser ESM and loads without Node globals in workerd', async () => {
+it.each(['spectrum-cloudflare', '@spectrum-cloudflare/imessage'])('bundles every %s export as browser ESM and loads without Node globals in workerd', async (specifier) => {
   const bundle = await build({
     stdin: {
       contents: `
-        import * as sdk from './src/index.ts';
+        import * as sdk from '${specifier}';
         export default {
           fetch() {
             return Response.json({
@@ -32,7 +32,7 @@ it('bundles every root export as ordinary browser ESM and loads without Node glo
   const forbidden = /(?:^|[/\\])(?:node:|bun:)|@spectrum-ts[/+]core|@grpc[/+]grpc-js|(?:^|[/\\])grpc-js(?:[/\\]|$)|@photon-ai[/+]advanced-imessage/;
   const builtins = new Set(builtinModules.map((name) => name.replace(/^node:/, '')));
   const inputs = Object.entries(bundle.metafile!.inputs);
-  expect(inputs.some(([path]) => path.endsWith('src/index.ts'))).toBe(true);
+  expect(inputs.some(([path]) => path.endsWith('dist/index.js'))).toBe(true);
   for (const [path, input] of inputs) {
     expect(path, 'forbidden runtime dependency in browser module graph').not.toMatch(forbidden);
     for (const dependency of input.imports) {

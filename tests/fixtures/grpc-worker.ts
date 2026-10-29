@@ -1,5 +1,5 @@
 import { ConnectError } from "@connectrpc/connect";
-import { createIMessageRpc } from "../../src/grpc.js";
+import { createIMessageRpc } from "@spectrum-cloudflare/imessage/grpc";
 
 export default {
   async fetch(request: Request): Promise<Response> {

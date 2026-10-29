@@ -1,5 +1,5 @@
 import { Code, ConnectError } from '@connectrpc/connect';
-import { SpectrumApi, type SpectrumApiOptions } from './api.js';
+import { SpectrumApi, type SpectrumApiOptions } from '@spectrum-cloudflare/api';
 import type { IMessageRpc } from './grpc.js';
 import { SpectrumLines, SHARED_PHONE, type ExplicitSpectrumLine } from './runtime-lines.js';
 import { attachmentUrl, text, type AttachmentContent, type SendContent } from './runtime-content.js';
@@ -9,7 +9,7 @@ import { ChatServiceType } from './generated/photon/imessage/v1/address_types_pb
 import { orderedMessageParts } from './runtime-parts.js';
 import { receivedAttachment } from './runtime-attachments.js';
 import { WorkersCapabilityError } from './runtime-errors.js';
-import { verifyLegacySpectrumWebhook, verifyStandardWebhook, WebhookVerificationError } from './webhooks.js';
+import { verifyLegacySpectrumWebhook, verifyStandardWebhook, WebhookVerificationError } from '@spectrum-cloudflare/webhooks';
 import type { MessageContent, SpectrumMessage, SpectrumSpace, SpectrumMessageHandler, SpectrumWebhookOptions } from './runtime-types.js';
 
 type NativeMessage = NonNullable<Awaited<ReturnType<IMessageRpc['messages']['getMessage']>>['message']>;

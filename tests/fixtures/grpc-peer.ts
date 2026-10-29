@@ -2,13 +2,13 @@
 // gRPC-Web-to-native-gRPC translation. No Photon endpoints are contacted.
 import { create, fromBinary, toBinary } from "@bufbuild/protobuf";
 import { EmptySchema } from "@bufbuild/protobuf/wkt";
-import { GetChatCountResponseSchema } from "../../src/generated/photon/imessage/v1/chat_service_pb.js";
+import { GetChatCountResponseSchema } from "@spectrum-cloudflare/imessage/proto/chat_service";
 import {
   DownloadAttachmentResponseSchema,
   UploadAttachmentRequestSchema,
   UploadAttachmentResponseSchema,
-} from "../../src/generated/photon/imessage/v1/attachment_service_pb.js";
-import { SubscribeMessageEventsResponseSchema } from "../../src/generated/photon/imessage/v1/message_service_pb.js";
+} from "@spectrum-cloudflare/imessage/proto/attachment_service";
+import { SubscribeMessageEventsResponseSchema } from "@spectrum-cloudflare/imessage/proto/message_service";
 
 export const grpcBigint = 9_007_199_254_740_993n;
 export const grpcBytes = new Uint8Array([0, 255, 128, 13, 10, 42]);

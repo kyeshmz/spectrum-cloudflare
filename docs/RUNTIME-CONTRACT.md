@@ -6,6 +6,14 @@ This is a small **Spectrum-adjacent facade**, not a drop-in replacement for
 `spectrum-ts`. It does not depend on or copy Spectrum core's provider registry,
 builder pipeline, telemetry, message runtime, or process lifecycle.
 
+The original repository is [photon-hq/spectrum-ts](https://github.com/photon-hq/spectrum-ts).
+Its adopted behavior tests and the remaining compatibility scope are tracked in
+[UPSTREAM-COMPATIBILITY.md](UPSTREAM-COMPATIBILITY.md).
+
+The implementation lives in `@spectrum-cloudflare/imessage`. Management and
+signature verification are separate dependency-free packages; `spectrum-cloudflare`
+forwards their public exports. See [package boundaries](PACKAGES.md).
+
 Production code uses Web APIs only: fetch, Web Crypto, AbortController,
 Uint8Array, Blob, and ReadableStream. There are no Node/Bun imports, Buffer,
 process, compatibility polyfills, or custom esbuild shims. An ordinary browser
@@ -97,7 +105,9 @@ validation. A refresh belongs to the app lifetime; cancelling one caller stops
 only that caller's wait, leaving concurrent callers' refresh intact. There are
 no refresh intervals or assumptions about isolate reuse.
 Dedicated instance IDs are validated before becoming hostname labels. Unassigned
-lines are ignored; removed line clients are cancelled. Multiple dedicated lines
+lines with no assignment history are ignored. A still-authenticated instance keeps
+its known phone during a temporary null/missing-number refresh; an instance removed
+from auth has its client cancelled. Multiple dedicated lines
 require explicit `phone` for existing-space operations. Creation without a phone
 chooses a current dedicated line at random, then pins the returned space to it.
 Shared mode uses deterministic `any;-;<peer>` DM GUIDs and cannot create groups.

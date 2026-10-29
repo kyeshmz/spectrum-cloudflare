@@ -1,4 +1,4 @@
-import { createSpectrum, text, richlink, attachment, group } from '../../src/index.js';
+import { createSpectrum, text, richlink, attachment, group } from '@spectrum-cloudflare/imessage';
 
 export default {
   async fetch(request: Request): Promise<Response> {

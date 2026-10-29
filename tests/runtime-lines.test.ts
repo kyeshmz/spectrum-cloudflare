@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { createSpectrum } from '../src/index.js';
+import { createSpectrum } from '@spectrum-cloudflare/imessage';
 import { runtimeGrpcPeer, type RuntimeCall } from './fixtures/runtime-grpc-peer.js';
 import { Code } from '@connectrpc/connect';
 
@@ -153,6 +153,56 @@ describe('demand-driven native line inventory', () => {
     controller.abort(new Error('initializer cancelled'));
     expect(String(await creating)).toContain('initializer cancelled');
     expect(mintSignal?.aborted).toBe(true);
+  });
+
+  it('retains only authenticated known instances when phone assignments disappear', async () => {
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(0);
+    let auth = { known: 'initial-token' } as Record<string, string>;
+    let numbers = { known: '+15550000001' } as Record<string, string | null>;
+    const calls: RuntimeCall[] = [];
+    const app = await createSpectrum({ projectId: 'p', projectSecret: 's', fetch: async (input, init) => {
+      const request = new Request(input, init);
+      if (new URL(request.url).hostname === 'spectrum.photon.codes') {
+        return Response.json({ succeed: true, data: { type: 'dedicated', auth, numbers, expiresIn: 1 } });
+      }
+      return runtimeGrpcPeer(request, { observe: call => calls.push(call) });
+    } });
+    try {
+      const client = await app.rpc('+15550000001');
+      auth = { known: 'renewed-token', unassigned: 'unused-token' };
+      numbers = { unassigned: null };
+      vi.setSystemTime(801);
+      expect(await app.rpc()).toBe(client);
+      await client.chats.markChatRead({ chatGuid: 's1' });
+      expect(calls[0]?.authorization).toBe('Bearer renewed-token');
+      // A stale number alone cannot keep an instance whose auth disappeared.
+      auth = { unassigned: 'unused-token' };
+      numbers = { known: '+15550000001', unassigned: null };
+      vi.setSystemTime(1602);
+      await expect(app.rpc('+15550000001')).rejects.toThrow('No active');
+      await expect(client.chats.markChatRead({ chatGuid: 's1' })).rejects.toMatchObject({ code: Code.Canceled });
+      expect(calls).toHaveLength(1);
+    } finally { await app.close(); }
+  });
+
+  it('rejects duplicate phone assignments after known-number fallback without committing the inventory', async () => {
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(0);
+    let numbers: Record<string, string | null> = { first: '+15550000001', second: '+15550000002' };
+    const app = await createSpectrum({ projectId: 'p', projectSecret: 's', fetch: async () => Response.json({
+      succeed: true, data: { type: 'dedicated', auth: { first: 'a', second: 'b' }, numbers, expiresIn: 1 },
+    }) });
+    try {
+      const first = await app.rpc('+15550000001');
+      const second = await app.rpc('+15550000002');
+      numbers = { first: null, second: '+15550000001' };
+      vi.setSystemTime(801);
+      await expect(app.rpc('+15550000001')).rejects.toThrow('duplicate phone');
+      numbers = { first: null, second: '+15550000002' };
+      expect(await app.rpc('+15550000001')).toBe(first);
+      expect(await app.rpc('+15550000002')).toBe(second);
+    } finally { await app.close(); }
   });
 
   it('routes a dedicated instance named shared by its discriminator and safely reconciles both transitions', async () => {

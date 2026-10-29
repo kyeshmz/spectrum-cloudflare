@@ -1,7 +1,7 @@
 import { create, fromBinary, toBinary, toJson, type DescMessage } from '@bufbuild/protobuf';
-import { MessageService } from '../../src/generated/photon/imessage/v1/message_service_pb.js';
-import { ChatService } from '../../src/generated/photon/imessage/v1/chat_service_pb.js';
-import { AttachmentService, UploadAttachmentRequestSchema } from '../../src/generated/photon/imessage/v1/attachment_service_pb.js';
+import { MessageService } from '@spectrum-cloudflare/imessage/proto/message_service';
+import { ChatService } from '@spectrum-cloudflare/imessage/proto/chat_service';
+import { AttachmentService, UploadAttachmentRequestSchema } from '@spectrum-cloudflare/imessage/proto/attachment_service';
 
 export interface RuntimeCall {
   readonly method: string;

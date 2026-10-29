@@ -8,8 +8,8 @@ import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const proto = join(root, "proto");
-const generated = join(root, "src/generated");
+const proto = join(root, "packages/imessage/proto");
+const generated = join(root, "packages/imessage/src/generated");
 const pin = "buf.build/photon-hq/imessage:d271d841bb604a8ea53556dfb1a77ac4";
 const args = process.argv.slice(2);
 const check = args.includes("--check");
@@ -58,7 +58,7 @@ try {
   if (sourceIndex === -1) {
     manifest = JSON.parse(await readFile(join(proto, "snapshot.json"), "utf8"));
     if (manifest.module !== pin) throw new Error("Unexpected Photon protobuf pin");
-    if (inputs.length !== Object.keys(manifest.sha256).length) throw new Error("Snapshot file inventory changed");
+    if (JSON.stringify(Object.keys(hashes).sort()) !== JSON.stringify(Object.keys(manifest.sha256).sort())) throw new Error("Snapshot file inventory changed");
     for (const [path, hash] of Object.entries(hashes)) {
       if (manifest.sha256[path] !== hash) throw new Error(`Snapshot changed: ${path}`);
     }
@@ -84,11 +84,11 @@ try {
   if (next.length === 0) throw new Error("Code generation produced no protobuf modules");
   if (check) {
     const previous = await files(generated, "_pb.ts");
-    if (previous.length !== next.length) throw new Error("Generated file inventory changed");
+    if (JSON.stringify(previous.map((file) => relative(generated, file))) !== JSON.stringify(next.map((file) => relative(output, file)))) throw new Error("Generated file inventory changed");
     for (const file of next) {
       const path = relative(output, file);
       if (!(await readFile(file)).equals(await readFile(join(generated, path)))) {
-        throw new Error(`Generated file is stale: src/generated/${path}`);
+        throw new Error(`Generated file is stale: packages/imessage/src/generated/${path}`);
       }
     }
   } else {

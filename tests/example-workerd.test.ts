@@ -4,7 +4,7 @@ import { build } from 'esbuild';
 import { Miniflare } from 'miniflare';
 import { describe, expect, it } from 'vitest';
 import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
-import { MessageResponseSchema, SendTextMessageRequestSchema } from '../src/generated/photon/imessage/v1/message_service_pb.js';
+import { MessageResponseSchema, SendTextMessageRequestSchema } from '@spectrum-cloudflare/imessage/proto/message_service';
 import { grpcFrame, grpcTrailers } from './fixtures/grpc-peer.js';
 
 const bindings = {

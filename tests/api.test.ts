@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
-import { SpectrumApi, SpectrumApiError } from '../src/api.js';
-import type { SpectrumOperations } from '../src/api.js';
-import { spectrumRoutes } from '../src/api-routes.js';
+import { SpectrumApi, SpectrumApiError } from '@spectrum-cloudflare/api';
+import type { SpectrumOperations } from '@spectrum-cloudflare/api';
+import { spectrumRoutes } from '../packages/api/src/api-routes.js';
 import { readFileSync } from 'node:fs';
 
 const projectId = 'cb8e9229-f333-4918-80e9-47b0a245293c';

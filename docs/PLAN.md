@@ -42,9 +42,10 @@ development-tooling dependency only.
 
 ## Package gate
 
-`pnpm check` verifies both generated contracts, builds package exports, type-checks
-source and tests, runs the complete suite, and builds the example. `pnpm pack`
-runs that gate through `prepack`.
+`pnpm check` verifies both generated contracts, builds workspace package exports,
+type-checks source and tests, runs the complete suite, and builds the example.
+`pnpm pack:all` runs that gate before producing all four package artifacts.
+Individual package `prepack` hooks build their dependency closure.
 
 Verify a release tarball in an isolated consumer with no ambient Node types:
 type-check public root/API/webhook/gRPC/protobuf imports, bundle with ordinary
@@ -52,7 +53,28 @@ browser-target esbuild, execute it in workerd without compatibility flags, and
 dry-run the shipped example with Wrangler. This checks the packaged artifact
 separately from repository self-references.
 
-### Final local verification — 2026-10-28
+### Modular workspace verification — 2026-10-28
+
+- Public repository: `kyeshmz/spectrum-cloudflare`; three independently owned
+  domain packages (`imessage`, `api`, `webhooks`) and the compatible umbrella.
+- `pnpm pack:all` passed with the pinned upstream checkout audit enabled:
+  **278 tests across 23 files**, including 54 upstream-derived cases, four Standard
+  Webhooks extensions, local provenance checks, and all 16 original-source hashes.
+  The ordinary suite has 262 tests; the additional 16 are the explicit source audit.
+- Fixed the upstream-derived known-line phone-loss scenario and checked renewed
+  credentials, client identity, retirement, and ambiguous-inventory rejection.
+  There are no expected failures or skipped compatibility placeholders.
+- All four packed artifacts passed isolated TypeScript, ESM export, private-import,
+  browser graph, and actual workerd checks. API/webhooks installed no messaging
+  dependencies. All 16 public protobuf modules resolved from both iMessage and
+  the umbrella. Every artifact includes upstream attribution.
+- The example copied from the final multi-package artifact set passed a normal
+  Wrangler `4.155.0` dry run: **77.15 KiB gzip**, without compatibility flags.
+- CI runs the same complete package gate, pinned upstream source audit, and
+  isolated artifact checks. See [upstream coverage](UPSTREAM-COMPATIBILITY.md)
+  and [package boundaries](PACKAGES.md).
+
+### Pre-split local verification — 2026-10-28
 
 - `pnpm pack` completed its full `prepack` gate: **189 tests across 14 files**,
   both generation checks, source/test typechecks, and the example build passed.

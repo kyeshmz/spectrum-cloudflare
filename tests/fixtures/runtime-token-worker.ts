@@ -1,4 +1,4 @@
-import { createSpectrum, SpectrumApiError } from '../../src/index.js';
+import { createSpectrum, SpectrumApiError } from '@spectrum-cloudflare/imessage';
 
 export default {
   async fetch(request: Request): Promise<Response> {

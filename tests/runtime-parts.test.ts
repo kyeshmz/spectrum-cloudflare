@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { createSpectrum } from '../src/index.js';
+import { createSpectrum } from '@spectrum-cloudflare/imessage';
 import { runtimeGrpcPeer, type RuntimeCall } from './fixtures/runtime-grpc-peer.js';
 
 async function fixture(wireText: string, guids = ['photo']) {

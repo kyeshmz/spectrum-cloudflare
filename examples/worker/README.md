@@ -7,6 +7,23 @@ Other providers, outgoing echoes, albums, and unknown shapes are ignored. The
 receipt is an ordinary chat message, not a threaded reply. `GET /health` does no
 I/O; `POST /send` is a 404.
 
+This example belongs to [Spectrum Cloudflare](https://github.com/kyeshmz/spectrum-cloudflare),
+based on behavior from the original [Spectrum SDK](https://github.com/photon-hq/spectrum-ts).
+
+## Scoped-package imports
+
+The shipped example exercises the `spectrum-cloudflare` convenience package.
+Applications using only the smaller packages can use the same Worker with these
+two imports instead:
+
+```ts
+import { createSpectrum, text } from '@spectrum-cloudflare/imessage';
+import { verifyLegacySpectrumWebhook, WebhookVerificationError } from '@spectrum-cloudflare/webhooks';
+```
+
+Declare both packages as direct application dependencies. See
+[local package installation](../../docs/PACKAGES.md) before npm publication.
+
 ## Build and run
 
 ```sh

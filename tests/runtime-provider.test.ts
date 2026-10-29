@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { createSpectrum, text, attachment, group, richlink } from '../src/index.js';
+import { createSpectrum, text, attachment, group, richlink } from '@spectrum-cloudflare/imessage';
 import { runtimeGrpcPeer, type RuntimeCall } from './fixtures/runtime-grpc-peer.js';
 
 describe('Web-only Spectrum-adjacent facade', () => {

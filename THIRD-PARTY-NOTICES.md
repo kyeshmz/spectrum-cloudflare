@@ -6,14 +6,21 @@ contracts and Connect's gRPC-Web implementation. Dependency licenses remain
 applicable to their respective packages.
 
 Routing behavior, shared-line semantics, multipart child IDs, attachment flow,
-and reaction mapping in `src/runtime-messages.ts`, `src/runtime.ts`,
-`src/runtime-lines.ts`, and `src/runtime-parts.ts` are adapted from:
+and reaction mapping in `packages/imessage/src/runtime-messages.ts`,
+`packages/imessage/src/runtime.ts`, `packages/imessage/src/runtime-lines.ts`, and
+`packages/imessage/src/runtime-parts.ts` are adapted from:
 
 - https://github.com/photon-hq/spectrum-ts
 - Inspected source commit: `d9e39089dc3d1c6f4536826f5ca50798856eecab`
 - Published core 12.14.0 git head: `2eb2a426d8670f3cc945d904b658a6259fe0e9e5`
 - Protobuf contract source: https://github.com/photon-hq/advanced-imessage-ts
 - Low-level 2.4.0 commit: `1548b6465e8ded2a461cfa2b7be1ac05b70d7329`
+
+Tests in `tests/upstream/` adapt cases from the same original Spectrum repository.
+Their source files, revisions, and adaptations are documented in
+`docs/UPSTREAM-COMPATIBILITY.md`. The upstream MIT license below applies to those
+derived test portions as well. Photon protobuf sources and their license are
+retained in `packages/imessage/proto/`.
 
 ## Spectrum upstream license
 

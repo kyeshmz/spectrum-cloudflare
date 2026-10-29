@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { isNormalizedSpectrumContent, verifyLegacySpectrumWebhook, verifyStandardWebhook } from '../src/webhooks.js';
-import type { NormalizedSpectrumWebhookEvent, SerializedSpectrumContent } from '../src/webhooks.js';
+import { isNormalizedSpectrumContent, verifyLegacySpectrumWebhook, verifyStandardWebhook } from '@spectrum-cloudflare/webhooks';
+import type { NormalizedSpectrumWebhookEvent, SerializedSpectrumContent } from '@spectrum-cloudflare/webhooks';
 
 // Independent fixtures: Python stdlib hmac/hashlib, NOT the verifier or a shared signer.
 // Standard key bytes = bytes(range(32)); legacy key is literal UTF-8 below.
