@@ -11,7 +11,7 @@ export interface ExplicitSpectrumLine {
 }
 
 export interface SpectrumLineOptions {
-  readonly api: SpectrumApi;
+  readonly api?: SpectrumApi;
   readonly clients?: readonly ExplicitSpectrumLine[];
   readonly fetch?: typeof fetch;
   readonly timeoutMs?: number;
@@ -25,6 +25,8 @@ interface Line {
   readonly baseUrl: string;
   readonly rpc: IMessageRpc;
 }
+
+export type NativeStreamLine = Pick<Line, 'phone' | 'rpc'>;
 
 function record(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
@@ -78,6 +80,8 @@ export class SpectrumLines {
   private readonly operations = new Set<Promise<unknown>>();
   private readonly retired = new Set<Promise<void>>();
   private readonly retirementErrors: unknown[] = [];
+  private readonly inventoryObservers = new Set<(lines: readonly NativeStreamLine[]) => void>();
+  private readonly streams = new Set<() => Promise<void>>();
 
   private constructor(private readonly options: SpectrumLineOptions) {
     this.signal = this.lifetime.signal;
@@ -172,6 +176,9 @@ export class SpectrumLines {
   }
 
   private async mint(): Promise<void> {
+    if (!this.options.api) {
+      throw new Error('Configure explicit iMessage clients or Spectrum API credentials');
+    }
     const data = parseTokens(await this.options.api.request('POST', '/projects/{projectId}/imessage/tokens', {
       signal: this.signal,
     }), this.lines);
@@ -205,6 +212,9 @@ export class SpectrumLines {
     this.credentials = new Map(data.entries.map(entry => [`${data.type}:${entry.key}`, entry.token]));
     this.lines = next;
     this.refreshAt = Date.now() + data.expiresIn * 800;
+    for (const observer of this.inventoryObservers) {
+      observer([...this.lines]);
+    }
     for (const line of removed) {
       const retirement = Promise.resolve(line.rpc.close());
       this.retired.add(retirement);
@@ -233,6 +243,29 @@ export class SpectrumLines {
       throw new Error(`No iMessage line serves phone ${phone}`);
     }
     return line;
+  }
+
+  /** Internal copied inventory; cancellation does not cancel a shared mint. */
+  async snapshot(signal?: AbortSignal): Promise<readonly NativeStreamLine[]> {
+    await this.refresh(signal);
+    signal?.throwIfAborted();
+    this.assertOpen();
+    return [...this.lines];
+  }
+
+  /** Internal live inventory hook. Registration includes the current snapshot. */
+  observeInventory(observer: (lines: readonly NativeStreamLine[]) => void): () => void {
+    this.assertOpen();
+    this.inventoryObservers.add(observer);
+    observer([...this.lines]);
+    return () => { this.inventoryObservers.delete(observer); };
+  }
+
+  /** Streams register their teardown so close awaits their native readers too. */
+  ownStream(close: () => Promise<void>): () => void {
+    this.assertOpen();
+    this.streams.add(close);
+    return () => { this.streams.delete(close); };
   }
 
   async forCreate(phone?: string): Promise<Line> {
@@ -264,6 +297,7 @@ export class SpectrumLines {
     this.closed = true;
     this.lifetime.abort(new Error('Spectrum app closed'));
     const cancellations = Promise.allSettled([
+      ...[...this.streams].map(close => close()),
       this.downloads.close(),
       ...this.lines.map(line => Promise.resolve(line.rpc.close())),
       ...this.retired,
@@ -274,6 +308,8 @@ export class SpectrumLines {
     await Promise.allSettled([...this.operations]);
     const results = await cancellations;
     this.lines = [];
+    this.streams.clear();
+    this.inventoryObservers.clear();
     this.credentials.clear();
     const failures = [...this.retirementErrors, ...results.flatMap(result => result.status === 'rejected' ? [result.reason] : [])];
     if (failures.length) {

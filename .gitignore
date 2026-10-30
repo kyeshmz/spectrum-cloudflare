@@ -13,3 +13,8 @@ coverage/
 *.tgz
 artifacts/
 .upstream/
+.oc-port/tool/
+.oc-port/cache/
+.oc-port/context/
+.oc-port/result.json
+.oc-port/agent-output.log

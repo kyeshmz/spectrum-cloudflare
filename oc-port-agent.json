@@ -1,0 +1,49 @@
+{
+  "$schema": ".oc-port/tool/schema/oc-port-agent.schema.json",
+  "version": 1,
+  "upstream": { "repository": "https://github.com/photon-hq/spectrum-ts.git", "ref": "main" },
+  "baselineCommit": "d9e39089dc3d1c6f4536826f5ca50798856eecab",
+  "allowNulTextPaths": ["packages/core/src/spectrum.ts"],
+  "selections": [{
+    "id": "core-public-api-builders",
+    "description": "Adapt shared Spectrum public call shapes, content builders and cloud iMessage consumption without transplanting the generalized provider framework.",
+    "upstreamPaths": ["packages/core/src/content/**", "packages/core/src/types/**", "packages/core/src/platform/**", "packages/core/src/spectrum.ts", "packages/core/src/index.ts", "packages/core/src/authoring.ts", "packages/core/src/build-env.ts", "packages/core/src/emoji/index.ts", "packages/core/src/utils/**", "packages/core/test/content/**", "packages/core/test/core/*.test.ts", "packages/core/test/platform/**", "packages/test-support/src/**", "packages/spectrum-ts/src/index.ts", "packages/spectrum-ts/src/authoring.ts", "packages/spectrum-ts/src/providers/index.ts", "packages/spectrum-ts/src/providers/imessage/**", "packages/spectrum-ts/test/**", "packages/core/package.json", "packages/spectrum-ts/package.json"],
+    "excludeUpstreamPaths": ["packages/core/src/types/ffmpeg-static.d.ts", "packages/core/src/utils/resumable-stream.ts", "packages/core/src/utils/stream-group.ts", "packages/core/src/utils/stream.ts", "packages/core/src/utils/token-renewal.ts", "packages/core/test/core/spectrum.env-credentials.test.ts", "packages/core/test/core/spectrum.unique-platform-names.test.ts", "packages/core/test/core/platform-wise-reads.test.ts", "packages/core/test/platform/**"],
+    "targetPaths": ["packages/imessage/src/**", "packages/imessage/README.md", "src/**", "tests/**", "README.md", "THIRD-PARTY-NOTICES.md", "docs/RUNTIME-CONTRACT.md", "docs/UPSTREAM-COMPATIBILITY.md", "docs/ports/**"],
+    "acceptance": [
+      "Supported Spectrum factory, imessage selectors/configuration, user/space lookup, send/reply variadics, actions and stop preserve upstream names and signatures; existing createSpectrum/app APIs remain usable through public exports.",
+      "Static and async builders preserve validation, order and target identities. Module-scope construction is lazy and workerd-safe; raw binary values stay Uint8Array and Web attachments remain app-owned and cancelable.",
+      "Evaluate text streams/extractors, Markdown/fallback, app/poll/membership/avatar/contact/voice/effect builders against original source and tests. Implement meaningful supported Web behavior with regression tests; report a precise macOS, dependency, provider or pinned-wire-contract blocker rather than inventing RPCs or silently claiming parity.",
+      "responding preserves callback result/error, attempts typing stop in finally and tolerates stop failure. Canonical target-space/phone guards and multipart child identities survive every action builder.",
+      "Public umbrella/provider exports retain identity with independently usable api, webhooks and imessage packages; compile and execute supported public consumption in packed workerd tests without Node compatibility flags.",
+      "Every adopted scenario has executable assertions and docs/ports receipts with immutable upstream source/test links, SHA-256 of original bytes, mapped target tests, adaptations and unresolved cases. Test counts, skipped placeholders and reports alone are not behavioral evidence."
+    ],
+    "mappings": [
+      { "upstream": "packages/core/src/content/**", "target": ["packages/imessage/src/runtime-content.ts", "packages/imessage/src/runtime-types.ts", "tests/**"] },
+      { "upstream": "packages/core/src/spectrum.ts", "target": ["packages/imessage/src/runtime-provider.ts", "packages/imessage/src/runtime.ts", "tests/**"] },
+      { "upstream": "packages/spectrum-ts/src/**", "target": ["src/**", "packages/imessage/src/index.ts", "tests/**"] }
+    ],
+    "instructions": {
+      "goal": "Make this default policy independently useful for actual public API and builder implementation, with original upstream tests as evidence, not a documentation-only compatibility report.",
+      "adaptation": ["Read docs/UPSTREAM-COMPATIBILITY.md and docs/COMPATIBILITY-PLAN.md before changing ownership. Extend the existing facade, content resolver and public indexes; share the existing SpectrumLines inventory, native materializer and app lifetime.", "The immutable baseline acknowledges only a partial existing port, not parity. Full adoption must evaluate missing selected capabilities and produce concrete behavior/tests or an honest blocked decision.", "Upstream utility/platform/authoring files and test-support are dependency and semantic evidence, not permission to recreate arbitrary provider loading, private context mocks, filesystem tooling or Node transports.", "Manifests are protected. If new dependencies, packages or export-map entries are necessary, record an architecture decision in docs/ports and request a separately reviewed policy change; do not weaken the checks or substitute a fake implementation."],
+      "nonGoals": ["Other-provider machinery, local Apple databases/macOS implementation, environment discovery and wholesale upstream framework transplantation.", "Automatic telemetry, Node/Bun polyfills, Buffer, nodejs_compat, generated emoji inventory copying or Node audio/image subprocesses."]
+    }
+  }],
+  "preserve": [
+    "Update current usage and compatibility documentation when behavior changes, while retaining original test attribution, license notices and historical baseline coverage. New support is not evidence that old tests were rebased.",
+    "Preserve all existing SDK work, public names/signatures and standalone package ownership. Use only standard Web APIs and the existing binary gRPC-Web and management contracts; no Node/Bun runtime dependencies or invented wire operations.",
+    "Keep one SpectrumLines inventory and one app lifetime. getMessage remains authoritative native lookup, not cache-first. Preserve canonical phone/space guards, multipart identities, awaited authenticated webhook handlers and bounded lazy error/cancel-safe iteration.",
+    "Original tests remain meaningful and new regressions are allowed; never delete, skip, relax or replace assertions merely to pass verification. Do not alter protected boundary/provenance/audit checks indirectly via fixtures or production special cases.",
+    "Keep tests/upstream-manifest.json and its original immutable pins unchanged. Record future partial-port links/hashes and adaptations separately under docs/ports with executable tests; never relabel local tests as original upstream files or claim test-count parity.",
+    "Do not change package manifests, lockfiles, scripts, CI, policy/check runners or source-audit logic. New dependency/package/export decisions require explicit human approval outside this policy."
+  ],
+  "protectedPaths": [".github/**", "AGENTS.md", "**/AGENTS.md", "CLAUDE.md", "**/CLAUDE.md", "oc-port-agent.json", "ports.json", "ports/**", "scripts/**", "package.json", "**/package.json", "**/pnpm-lock.yaml", "**/package-lock.json", "**/yarn.lock", "**/bun.lock", "**/bun.lockb", "pnpm-workspace.yaml", "**/tsconfig*.json", "**/vitest.config.*", "**/wrangler.*", "**/generated/**", "packages/imessage/proto/**", "packages/api/src/api-routes.ts", "packages/api/src/api-types.ts", "tests/upstream-manifest.json", "tests/upstream/provenance.test.ts", "tests/grpc-codegen.test.ts", "tests/package-boundaries.test.ts", "tests/web-boundary.test.ts", "tests/*boundary*.test.ts", "tests/*audit*.test.ts", "tests/*provenance*.test.ts", "tests/upstream/*audit*", "tests/upstream/*provenance*", "tests/oc-port*", "tests/port-policy*", "docs/COMPATIBILITY-PLAN.md"],
+  "verification": [
+    { "command": "pnpm", "args": ["install", "--frozen-lockfile"], "timeoutSeconds": 300 },
+    { "command": "pnpm", "args": ["pack:all"], "timeoutSeconds": 600 },
+    { "command": "pnpm", "args": ["check:packed"], "timeoutSeconds": 600 }
+  ],
+  "opencode": { "executable": "opencode", "model": "openai/gpt-6.1-sol", "timeoutSeconds": 3600, "maxAttempts": 2, "steps": 150 },
+  "limits": { "maxCommits": 100, "maxContextBytes": 1000000 },
+  "allowSkillEdits": []
+}

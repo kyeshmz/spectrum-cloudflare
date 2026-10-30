@@ -1,12 +1,15 @@
 # Upstream attribution
 
 This package does not depend on Spectrum core or the Advanced iMessage SDK at
-runtime. It is a small Web-only adjacent facade over generated Photon protobuf
+runtime. It is a scoped Web-only compatibility facade over generated Photon protobuf
 contracts and Connect's gRPC-Web implementation. Dependency licenses remain
 applicable to their respective packages.
 
 Routing behavior, shared-line semantics, multipart child IDs, attachment flow,
-and reaction mapping in `packages/imessage/src/runtime-messages.ts`,
+reaction mapping, content builders, provider call shapes, and native event
+semantics in `packages/imessage/src/runtime-content.ts`,
+`packages/imessage/src/runtime-streams.ts`, `packages/imessage/src/runtime-provider.ts`,
+`packages/imessage/src/runtime-messages.ts`,
 `packages/imessage/src/runtime.ts`, `packages/imessage/src/runtime-lines.ts`, and
 `packages/imessage/src/runtime-parts.ts` are adapted from:
 
@@ -17,6 +20,8 @@ and reaction mapping in `packages/imessage/src/runtime-messages.ts`,
 - Low-level 2.4.0 commit: `1548b6465e8ded2a461cfa2b7be1ac05b70d7329`
 
 Tests in `tests/upstream/` adapt cases from the same original Spectrum repository.
+The `tests/compat-*.test.ts` additions contain source-guided compatibility
+regressions and selected adapted assertions with source lineage in their headers.
 Their source files, revisions, and adaptations are documented in
 `docs/UPSTREAM-COMPATIBILITY.md`. The upstream MIT license below applies to those
 derived test portions as well. Photon protobuf sources and their license are

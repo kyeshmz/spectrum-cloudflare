@@ -1,0 +1,5 @@
+{
+  "$schema": ".oc-port/tool/schema/oc-port-agent.collection.schema.json",
+  "version": 1,
+  "policies": ["oc-port-agent.json", "ports/cloud-actions.json", "ports/cloud-lifecycle.json", "ports/shared-delivery.json"]
+}

@@ -1,6 +1,6 @@
 {
   "name": "spectrum-cloudflare",
-  "description": "Web-only Spectrum-adjacent messaging for Cloudflare Workers",
+  "description": "Spectrum-style iMessage APIs with Web-only transport for Cloudflare Workers",
   "version": "0.0.0",
   "type": "module",
   "sideEffects": false,
@@ -31,6 +31,10 @@
       "types": "./dist/imessage.d.ts",
       "import": "./dist/imessage.js"
     },
+    "./providers/imessage": {
+      "types": "./dist/providers/imessage.d.ts",
+      "import": "./dist/providers/imessage.js"
+    },
     "./webhooks": {
       "types": "./dist/webhooks.d.ts",
       "import": "./dist/webhooks.js"
@@ -47,6 +51,8 @@
     "docs/RUNTIME-CONTRACT.md",
     "docs/PACKAGES.md",
     "docs/UPSTREAM-COMPATIBILITY.md",
+    "docs/COMPATIBILITY-PLAN.md",
+    "docs/UPSTREAM-PORTING.md",
     "THIRD-PARTY-NOTICES.md"
   ],
   "scripts": {
@@ -54,6 +60,11 @@
     "check-types": "pnpm -r run check-types && tsc -p tsconfig.json && tsc -p tsconfig.test.json",
     "test": "vitest run",
     "test:upstream": "vitest run tests/upstream",
+    "test:compat": "vitest run tests/upstream tests/compat-*.test.ts",
+    "port:setup": "node scripts/setup-oc-port.mjs",
+    "oc-port": "node .oc-port/tool/dist/src/cli.js",
+    "port:check": "pnpm oc-port check --collection ports.json",
+    "port:sync": "pnpm oc-port sync --collection ports.json",
     "build:example": "node examples/worker/build.mjs",
     "check:generated": "node scripts/generate-api.mjs --check",
     "generate:grpc": "node scripts/generate-grpc.mjs",

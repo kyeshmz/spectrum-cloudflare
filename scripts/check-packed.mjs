@@ -8,6 +8,9 @@ import { fileURLToPath } from 'node:url';
 import { gzipSync } from 'node:zlib';
 import { build } from 'esbuild';
 import { Miniflare } from 'miniflare';
+import { create, toBinary } from '@bufbuild/protobuf';
+import { MessageService } from 'spectrum-cloudflare/proto/message_service';
+import { ChatService } from 'spectrum-cloudflare/proto/chat_service';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const artifacts = join(root, 'artifacts');
@@ -41,6 +44,25 @@ const workspace = `overrides:\n${Object.entries(overrides).map(([name, file]) =>
 const timestamp = '1800000000';
 const signedBody = '{"type":"text","text":"packed webhook"}';
 const signature = createHmac('sha256', 'packed-secret').update(`v0:${timestamp}:${signedBody}`).digest('hex');
+const nativeMessage = {
+  guid: 'packed-incoming', chatGuids: ['any;-;peer'], isFromMe: false,
+  dateCreated: { seconds: 1800000000n, nanos: 0 },
+  sender: { address: 'peer' }, content: { text: 'hello from native events' },
+};
+const nativeOutputs = {
+  GetChatCount: { count: 9007199254740995n },
+  SubscribeMessageEvents: { sequence: 9007199254740995n, payload: { case: 'messageChanged', value: {
+    chatGuid: 'any;-;peer', occurredAt: { seconds: 1800000001n, nanos: 0 },
+    change: { case: 'messageReceived', value: { message: nativeMessage } },
+  } } },
+  SendTextMessage: { message: { ...nativeMessage, guid: 'packed-sent', isFromMe: true } },
+  SetTyping: {},
+};
+const nativeBytes = Object.fromEntries(Object.entries(nativeOutputs).map(([name, output]) => {
+  const method = [...MessageService.methods, ...ChatService.methods].find(method => method.name === name);
+  assert.ok(method, `Missing packed fixture method ${name}`);
+  return [name, [...toBinary(method.output, create(method.output, output))]];
+}));
 
 function workerSource(name) {
   const imports = [`import * as sdk from ${JSON.stringify(name)};`];
@@ -71,36 +93,55 @@ function workerSource(name) {
   } else {
     imports.push(`import { createIMessageRpc } from ${JSON.stringify(`${name}/grpc`)};`);
     imports.push(`import { ChatService } from ${JSON.stringify(`${name}/proto/chat_service`)};`);
+    imports.push(`import { imessage as provider } from ${JSON.stringify(name === 'spectrum-cloudflare' ? `${name}/providers/imessage` : name)};`);
     if (name === 'spectrum-cloudflare') {
       imports.push(`import * as imessage from 'spectrum-cloudflare/imessage';`);
       imports.push(`import { SpectrumApi } from 'spectrum-cloudflare/api';`);
       imports.push(`import { verifyStandardWebhook } from 'spectrum-cloudflare/webhooks';`);
     }
     exercise = `
-      const expectedCount = 9007199254740995n;
+      const responses: Record<string, number[]> = ${JSON.stringify(nativeBytes)};
+      const methods: string[] = [];
       const fetchPeer: typeof fetch = async (input, init) => {
         const request = new Request(input, init);
-        if (!request.url.endsWith('/photon.imessage.v1.ChatService/GetChatCount')
-          || request.headers.get('authorization') !== 'Bearer packed-token'
+        const method = new URL(request.url).pathname.split('/').at(-1)!;
+        if (!responses[method] || request.headers.get('authorization') !== 'Bearer packed-token'
           || request.headers.get('x-photon-server') !== null
           || init?.redirect !== 'manual') throw new Error('Unexpected gRPC request');
-        const bytes = [8];
-        for (let remaining = expectedCount; remaining; remaining >>= 7n) {
-          bytes.push(Number(remaining & 127n) | (remaining > 127n ? 128 : 0));
-        }
-        const message = frame(0, new Uint8Array(bytes));
+        methods.push(method);
+        const message = frame(0, new Uint8Array(responses[method]));
         const trailers = frame(128, new TextEncoder().encode('grpc-status: 0\\r\\n'));
         const body = new Uint8Array(message.length + trailers.length);
         body.set(message); body.set(trailers, message.length);
         return new Response(body, { headers: { 'content-type': 'application/grpc-web+proto' } });
       };
-      const app = await sdk.createSpectrum({ projectId: 'p', projectSecret: 's',
-        clients: [{ phone: 'shared', token: 'packed-token', baseUrl: 'https://packed.invalid' }], fetch: fetchPeer,
+      const app = await sdk.Spectrum({
+        providers: [provider.config({ clients: { phone: 'shared', token: 'packed-token', address: 'https://packed.invalid' } })],
+        fetch: fetchPeer,
       });
       let count: bigint;
-      try { count = (await (await app.rpc()).chats.getChatCount({})).count; }
-      finally { await app.close(); }
+      let received = '';
+      let replyId: string | undefined;
+      let eventTimestamp = '';
+      let sameProvider = false;
+      try {
+        const im = provider(app);
+        sameProvider = im === provider(app) && im.messages === app.messages;
+        const space = await im.space.get('any;-;peer');
+        if (provider(space) !== space || !provider.is(space)) throw new Error('Provider narrowing lost identity');
+        if ((await sdk.text('built').build()).text !== 'built') throw new Error('Builder contract changed');
+        count = (await (await app.rpc()).chats.getChatCount({})).count;
+        for await (const [incomingSpace, message] of app.messages) {
+          if (message.content.type !== 'text') throw new Error('Unexpected content');
+          received = message.content.text;
+          eventTimestamp = message.timestamp.toISOString();
+          const sent = await incomingSpace.responding(() => message.reply(sdk.text('upstream-style reply')));
+          replyId = sent?.id;
+          break;
+        }
+      } finally { await app.stop(); }
       const value = { count: String(count), service: ChatService.typeName,
+        received, replyId, eventTimestamp, sameProvider, methods,
         sameFactory: sdk.createIMessageRpc === createIMessageRpc,
         ${name === 'spectrum-cloudflare' ? 'sameFacade: sdk.createSpectrum === imessage.createSpectrum, sameApi: sdk.SpectrumApi === SpectrumApi, sameVerifier: sdk.verifyStandardWebhook === verifyStandardWebhook,' : ''}
       };
@@ -144,7 +185,9 @@ try {
       include: ['worker.ts'],
     }));
     execFileSync(join(root, 'node_modules/.bin/tsc'), ['-p', join(consumer, 'tsconfig.json')], { cwd: consumer, stdio: 'pipe' });
-    const publicImports = [name];
+    const publicImports = Object.keys(pkg.manifest.exports)
+      .filter(key => !key.includes('*'))
+      .map(key => key === '.' ? name : `${name}${key.slice(1)}`);
     let protobufExports = 0;
     const proto = pkg.manifest.exports['./proto/*'];
     if (proto) {
@@ -193,6 +236,11 @@ try {
         assert.equal(data.value.count, '9007199254740995');
         assert.equal(data.value.service, 'photon.imessage.v1.ChatService');
         assert.equal(data.value.sameFactory, true);
+        assert.equal(data.value.sameProvider, true);
+        assert.equal(data.value.received, 'hello from native events');
+        assert.equal(data.value.replyId, 'packed-sent');
+        assert.equal(data.value.eventTimestamp, new Date(1800000001000).toISOString());
+        assert.deepEqual(data.value.methods, ['GetChatCount', 'SubscribeMessageEvents', 'SetTyping', 'SendTextMessage', 'SetTyping']);
         if (name === 'spectrum-cloudflare') {
           assert.equal(data.value.sameFacade, true);
           assert.equal(data.value.sameApi, true);

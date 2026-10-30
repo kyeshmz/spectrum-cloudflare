@@ -10,7 +10,7 @@ The original SDK is [photon-hq/spectrum-ts](https://github.com/photon-hq/spectru
 | `@spectrum-cloudflare/api` | Management transport and generated operation types | Package root |
 | `@spectrum-cloudflare/webhooks` | Signature verification and normalized payload types | Package root |
 | `@spectrum-cloudflare/imessage` | Messaging facade, line credentials, attachment lifetime, gRPC transport and protobuf schemas | Root, `/grpc`, `/proto/*` |
-| `spectrum-cloudflare` | Compatibility exports | Root, `/api`, `/webhooks`, `/imessage`, `/grpc`, `/proto/*` |
+| `spectrum-cloudflare` | Compatibility exports | Root, `/api`, `/webhooks`, `/imessage`, `/providers/imessage`, `/grpc`, `/proto/*` |
 
 API and webhooks have no runtime dependencies. iMessage depends on those two
 packages and `@bufbuild/protobuf`, `@connectrpc/connect`, and
@@ -18,7 +18,7 @@ packages and `@bufbuild/protobuf`, `@connectrpc/connect`, and
 Each implementation has one owner; cross-package imports use public exports.
 
 ```ts
-import { createSpectrum, text } from '@spectrum-cloudflare/imessage';
+import { Spectrum, imessage, text } from '@spectrum-cloudflare/imessage';
 import { SpectrumApi } from '@spectrum-cloudflare/api';
 import { verifyLegacySpectrumWebhook } from '@spectrum-cloudflare/webhooks';
 import { createIMessageRpc } from '@spectrum-cloudflare/imessage/grpc';

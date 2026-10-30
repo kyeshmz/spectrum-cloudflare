@@ -5,6 +5,9 @@ import { Miniflare } from 'miniflare';
 import { expect, it } from 'vitest';
 import { createSpectrum as umbrella, SpectrumApi as umbrellaApi } from 'spectrum-cloudflare';
 import { createSpectrum as standalone } from '@spectrum-cloudflare/imessage';
+import { Spectrum, imessage } from '@spectrum-cloudflare/imessage';
+import { Spectrum as umbrellaSpectrum } from 'spectrum-cloudflare';
+import * as providerShim from 'spectrum-cloudflare/providers/imessage';
 import { SpectrumApi } from '@spectrum-cloudflare/api';
 import { createIMessageRpc as umbrellaRpc } from 'spectrum-cloudflare/grpc';
 import { createIMessageRpc } from '@spectrum-cloudflare/imessage/grpc';
@@ -13,6 +16,9 @@ import { MessageService, type SendTextMessageRequest } from '@spectrum-cloudflar
 
 it('preserves umbrella identities and typed public protobuf and gRPC subpaths', () => {
   expect(umbrella).toBe(standalone);
+  expect(umbrellaSpectrum).toBe(Spectrum);
+  expect(providerShim.imessage).toBe(imessage);
+  expect(providerShim.Spectrum).toBe(Spectrum);
   expect(umbrellaApi).toBe(SpectrumApi);
   expect(umbrellaRpc).toBe(createIMessageRpc);
   expect(umbrellaService).toBe(MessageService);

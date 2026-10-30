@@ -14,6 +14,9 @@ describe('upstream provenance (local bookkeeping, not a compatibility scenario)'
       if ('portedTo' in source) {
         expect(await readFile(new URL(source.portedTo!, import.meta.url), 'utf8')).toContain('Photon AI');
       }
+      if ('compatibilityTests' in source) {
+        expect(await readFile(new URL(source.compatibilityTests!, import.meta.url), 'utf8')).toContain('Photon AI');
+      }
     }
   });
   // Optional source-audit mode; normal tests never need a checkout, network or upstream dependency.

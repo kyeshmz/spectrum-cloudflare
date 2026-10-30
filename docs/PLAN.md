@@ -1,5 +1,10 @@
 # Web-only integration plan
 
+The subsequent source-compatibility increment is specified in
+[COMPATIBILITY-PLAN.md](COMPATIBILITY-PLAN.md). It adds Spectrum-style consumption
+to the Web-only runtime established here. Verification milestones below retain
+their original counts for provenance.
+
 ## Architecture
 
 The user requested a Spectrum-adjacent Worker API without Bun or Node runtime

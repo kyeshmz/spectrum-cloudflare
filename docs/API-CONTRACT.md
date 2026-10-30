@@ -2,7 +2,7 @@
 
 Researched 2026-10-28. This package's management client targets **Stable Spectrum**,
 not Photon Beta/2.0. The management and webhook-verification modules use only
-fetch, Web APIs, and Web Crypto. The root Spectrum-adjacent facade is also Web-only;
+fetch, Web APIs, and Web Crypto. The Spectrum-compatible iMessage facade is also Web-only;
 its messaging behavior is covered by [the runtime contract](RUNTIME-CONTRACT.md).
 
 ## Sources and revision

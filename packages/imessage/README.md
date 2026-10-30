@@ -1,7 +1,8 @@
 # @spectrum-cloudflare/imessage
 
-Spectrum-adjacent iMessage messaging for Cloudflare Workers: spaces, replies,
-reactions, edits, attachments, and **51 typed Photon gRPC methods**.
+Spectrum-style iMessage messaging for Cloudflare Workers: provider configuration,
+spaces, native message iteration, builders, replies, reactions, edits, attachments,
+and **51 typed Photon gRPC methods**.
 
 Part of [Spectrum Cloudflare](https://github.com/kyeshmz/spectrum-cloudflare).
 The original SDK is [photon-hq/spectrum-ts](https://github.com/photon-hq/spectrum-ts);
@@ -9,20 +10,26 @@ our [compatibility tests](https://github.com/kyeshmz/spectrum-cloudflare/blob/ma
 record the pinned upstream source and supported behavior.
 
 ```ts
-import { createSpectrum, text } from '@spectrum-cloudflare/imessage';
+import { Spectrum, imessage, text } from '@spectrum-cloudflare/imessage';
 
-const app = await createSpectrum({
+const app = await Spectrum({
   projectId: env.SPECTRUM_PROJECT_ID,
   projectSecret: env.SPECTRUM_PROJECT_SECRET,
+  providers: [imessage.config()],
 });
 try {
-  const space = app.space('any;-;+15551112222', { phone: 'shared' });
+  const space = await imessage(app).space.get('any;-;+15551112222', { phone: 'shared' });
   const sent = await space.send(text('Hello from a Worker'));
   await sent.reply('Threaded reply');
 } finally {
-  await app.close();
+  await app.stop();
 }
 ```
+
+`imessage(app).messages` and `app.messages` share native subscriptions. The
+`spectrum-cloudflare/providers/imessage` umbrella export is the same provider.
+Existing `createSpectrum`, synchronous `app.space()`, and `close()` remain usable.
+See the compatibility document for the supported subset and Web adaptations.
 
 ## Native services
 

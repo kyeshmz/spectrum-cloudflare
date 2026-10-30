@@ -1,0 +1,49 @@
+{
+  "$schema": "../.oc-port/tool/schema/oc-port-agent.schema.json",
+  "version": 1,
+  "upstream": { "repository": "https://github.com/photon-hq/spectrum-ts.git", "ref": "main" },
+  "baselineCommit": "d9e39089dc3d1c6f4536826f5ca50798856eecab",
+  "allowNulTextPaths": ["packages/core/src/spectrum.ts"],
+  "selections": [{
+    "id": "shared-webhooks-streams",
+    "description": "Shared webhook authentication/deserialization, stream/cancellation utilities and cloud lifetime semantics with original tests and explicit Worker adaptations.",
+    "upstreamPaths": ["packages/core/src/webhook/**", "packages/core/src/fusor/**", "packages/core/src/spectrum.ts", "packages/core/src/platform/**", "packages/core/src/types/message.ts", "packages/core/src/types/space.ts", "packages/core/src/types/user.ts", "packages/core/src/content/types.ts", "packages/core/src/utils/**", "packages/core/test/webhook/**", "packages/core/test/core/fusor/**", "packages/core/test/utils/**", "packages/test-support/src/**"],
+    "excludeUpstreamPaths": ["packages/core/test/utils/env.test.ts", "packages/core/test/utils/provider-packages.test.ts", "packages/core/test/utils/instrumented-fetch.test.ts", "packages/core/test/utils/otel-scoped.test.ts", "packages/core/test/utils/telemetry.test.ts"],
+    "targetPaths": ["packages/webhooks/src/**", "packages/webhooks/README.md", "packages/imessage/src/**", "packages/imessage/README.md", "packages/api/src/**", "src/**", "tests/**", "README.md", "THIRD-PARTY-NOTICES.md", "docs/RUNTIME-CONTRACT.md", "docs/UPSTREAM-COMPATIBILITY.md", "docs/ports/**"],
+    "acceptance": [
+      "Authenticate untouched request bytes before parsing/hydration; preserve legacy v0 prefix requirements and Standard Webhooks as a local extension, explicit schemes, replay bounds, key rotation and typed failures. Invalid signatures never invoke handlers.",
+      "Web Request delivery awaits async callbacks and propagates their failures; unknown normalized envelopes are rejected, not silently acknowledged. Preserve canonical space/phone and multipart targets through deserialization and actionable hydration.",
+      "Adapt supported original deserialize, webhook and stream utility scenarios into executable public API tests. Evaluate advanced content/event mappings against the native and normalized wire contracts; report precise missing fields/contracts rather than fabricating parity.",
+      "Bounded lazy iteration preserves backpressure, abort/return cleanup, pending-consumer settlement and error propagation across multiple consumers and line refresh. Reuse existing app lifetime and credential inventory, not a second stream owner.",
+      "Fusor/resumable source and original tests are watched semantic evidence: adopt isolated Web-safe improvements when justified, but unsupported full services/replay/reconnect need an explicit contract/architecture blocker and must not be labeled passed.",
+      "api, webhooks and imessage remain independently usable; real packed workerd consumers pass without Node/Bun globals or nodejs_compat. Preserve original manifest pins and meaningful existing tests; new ports include executable assertions and docs/ports immutable source/test URLs, original SHA-256 hashes and adaptation/blocker receipts."
+    ],
+    "mappings": [
+      { "upstream": "packages/core/src/webhook/**", "target": ["packages/webhooks/src/**", "packages/imessage/src/runtime.ts", "packages/imessage/src/runtime-messages.ts", "tests/**"] },
+      { "upstream": "packages/core/src/utils/cloud.ts", "target": ["packages/api/src/**", "packages/imessage/src/runtime-lines.ts", "tests/**"] },
+      { "upstream": "packages/core/src/utils/stream*.ts", "target": ["packages/imessage/src/runtime-streams.ts", "packages/imessage/src/grpc.ts", "tests/**"] },
+      { "upstream": "packages/core/test/**", "target": ["tests/**", "docs/ports/**"] }
+    ],
+    "instructions": {
+      "goal": "Track and implement supported shared delivery/security/cancellation behavior with original upstream tests, preserving deliberate Worker webhook and lifecycle differences.",
+      "adaptation": ["Read docs/UPSTREAM-COMPATIBILITY.md and docs/COMPATIBILITY-PLAN.md. Baseline is acknowledged partial adoption, not parity. Do not turn upstream fire-and-forget acknowledgements, bare-hex signatures or cache-first metadata into regressions in the Web facade.", "Shared platform/Fusor/utility/test-support sources are semantic dependencies. Reuse one SpectrumLines inventory, one app lifetime, authoritative native lookup and bounded native broadcast rather than transplanting a registry/framework or private Node mocks.", "All four independent packages must retain public identity and supported signatures. New dependency/package/export-map needs must be documented as architecture decisions in docs/ports and separately approved; manifests, scripts and verification remain protected.", "Supported improvements require actual runtime and regression-test artifacts; record precise wire-contract, provider or host-lifetime blockers instead of blanket documentation-only success or invented behavior."],
+      "nonGoals": ["Other providers, local Apple DB/macOS integrations, environment discovery, automatic telemetry and wholesale upstream framework transplantation.", "Node/Bun polyfills, Buffer, nodejs_compat, full unreviewed Fusor services, automatic reconnection/catch-up replay and upstream framework adapters instead of the Web Request API."]
+    }
+  }],
+  "preserve": [
+    "Update current usage and compatibility documentation when behavior changes, while retaining original test attribution, license notices and historical baseline coverage. New support is not evidence that old tests were rebased.",
+    "Preserve existing SDK work, supported public names/signatures, raw Uint8Array and standalone package ownership. Only standard Web APIs and existing management/binary gRPC-Web contracts are allowed.",
+    "One SpectrumLines inventory/app lifetime; authoritative uncached getMessage; canonical phone/space guards; multipart identities; authenticated byte-exact awaited webhook handlers; bounded lazy iterators with error/cancel propagation.",
+    "Never delete, skip, weaken or replace meaningful tests, bypass protected boundary/provenance/audit checks via fixtures or test-specific runtime branches, or rewrite original tests/upstream-manifest.json pins. Record new partial-port links/hashes and executable target tests under docs/ports; test counts and reports alone establish no parity.",
+    "Do not modify manifests, lockfiles, scripts, CI, policy/check runners or source-audit logic. New dependencies/packages/export-map changes need human approval outside this policy."
+  ],
+  "protectedPaths": [".github/**", "AGENTS.md", "**/AGENTS.md", "CLAUDE.md", "**/CLAUDE.md", "oc-port-agent.json", "ports.json", "ports/**", "scripts/**", "package.json", "**/package.json", "**/pnpm-lock.yaml", "**/package-lock.json", "**/yarn.lock", "**/bun.lock", "**/bun.lockb", "pnpm-workspace.yaml", "**/tsconfig*.json", "**/vitest.config.*", "**/wrangler.*", "**/generated/**", "packages/imessage/proto/**", "packages/api/src/api-routes.ts", "packages/api/src/api-types.ts", "tests/upstream-manifest.json", "tests/upstream/provenance.test.ts", "tests/grpc-codegen.test.ts", "tests/package-boundaries.test.ts", "tests/web-boundary.test.ts", "tests/*boundary*.test.ts", "tests/*audit*.test.ts", "tests/*provenance*.test.ts", "tests/upstream/*audit*", "tests/upstream/*provenance*", "tests/oc-port*", "tests/port-policy*", "docs/COMPATIBILITY-PLAN.md"],
+  "verification": [
+    { "command": "pnpm", "args": ["install", "--frozen-lockfile"], "timeoutSeconds": 300 },
+    { "command": "pnpm", "args": ["pack:all"], "timeoutSeconds": 600 },
+    { "command": "pnpm", "args": ["check:packed"], "timeoutSeconds": 600 }
+  ],
+  "opencode": { "executable": "opencode", "model": "openai/gpt-6.1-sol", "timeoutSeconds": 3600, "maxAttempts": 2, "steps": 150 },
+  "limits": { "maxCommits": 100, "maxContextBytes": 1000000 },
+  "allowSkillEdits": []
+}

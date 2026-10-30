@@ -1,0 +1,47 @@
+{
+  "$schema": "../.oc-port/tool/schema/oc-port-agent.schema.json",
+  "version": 1,
+  "upstream": { "repository": "https://github.com/photon-hq/spectrum-ts.git", "ref": "main" },
+  "baselineCommit": "d9e39089dc3d1c6f4536826f5ca50798856eecab",
+  "selections": [{
+    "id": "cloud-imessage-actions",
+    "description": "Cloud iMessage space routing, outbound content/actions, attachments and advanced builder delivery, with original cloud-provider tests.",
+    "upstreamPaths": ["packages/imessage/src/**", "packages/imessage/test/**", "packages/imessage/package.json", "packages/imessage/README.md", "packages/core/src/content/**", "packages/core/src/types/message.ts", "packages/core/src/types/space.ts", "packages/core/src/types/user.ts", "packages/core/src/utils/audio.ts", "packages/core/src/utils/errors.ts", "packages/core/src/utils/identifier.ts", "packages/core/src/utils/io.ts", "packages/core/src/utils/link-metadata.ts", "packages/core/src/utils/markdown.ts", "packages/core/src/utils/photo-content.ts", "packages/core/src/utils/vcard.ts", "packages/test-support/src/**"],
+    "excludeUpstreamPaths": ["packages/imessage/test/auth.test.ts", "packages/imessage/test/config.test.ts", "packages/imessage/test/remote/heartbeats.test.ts", "packages/imessage/test/remote/stream.test.ts", "packages/imessage/test/remote/profile-sync-gate.test.ts", "packages/imessage/test/remote/read-receipts.test.ts", "packages/imessage/test/remote/inbound.test.ts", "packages/imessage/test/remote/inbound-app-card.test.ts", "packages/imessage/test/remote/group-events.test.ts", "packages/imessage/test/remote/message-metadata.test.ts", "packages/imessage/test/remote/message-metadata-integration.test.ts"],
+    "targetPaths": ["packages/imessage/src/**", "packages/imessage/README.md", "src/**", "tests/**", "README.md", "THIRD-PARTY-NOTICES.md", "docs/RUNTIME-CONTRACT.md", "docs/UPSTREAM-COMPATIBILITY.md", "docs/ports/**"],
+    "acceptance": [
+      "Original space, reactions, unsend and read-action scenarios map to real native binary requests, preserving shared/dedicated routing, explicit phone identity, canonical phone/space checks and parent GUID plus part index.",
+      "Preserve text/link/binary/group sends, ordered variadic sends/replies, typing cleanup and authoritative getMessage without cache-first resolution. Native failures propagate with actionable typed errors; no mock-only success path.",
+      "Evaluate every selected original Markdown, stream-text, app-card, poll, membership, background, contact and advanced-action scenario. Adopt supported Web behavior with executable tests or report the exact provider/macOS/dependency/pinned-wire-contract blocker. Native RPC exposure alone is not builder or event parity.",
+      "Web attachments use raw Uint8Array/Blob/URL, preserve multipart identities and use existing app-owned download/upload cancellation and cleanup. Do not recreate filesystem inputs, ffmpeg/image subprocesses or Buffer wrappers.",
+      "Add source-linked upstream-derived regressions and docs/ports receipts containing immutable source/test URLs, original SHA-256 hashes, target tests, explicit adaptations and unimplemented scenarios. Preserve all existing tests and original manifest pins; no test-count mirroring, skipped placeholders or weakened assertions.",
+      "Supported APIs remain reachable from existing public indexes and standalone imessage/umbrella packages and pass packed workerd execution without Node globals or compatibility flags."
+    ],
+    "mappings": [
+      { "upstream": "packages/imessage/src/remote/**", "target": ["packages/imessage/src/runtime.ts", "packages/imessage/src/runtime-content.ts", "packages/imessage/src/runtime-messages.ts", "packages/imessage/src/runtime-parts.ts", "packages/imessage/src/runtime-attachments.ts", "packages/imessage/src/runtime-downloads.ts", "packages/imessage/src/runtime-types.ts", "tests/**"] },
+      { "upstream": "packages/imessage/src/content/**", "target": ["packages/imessage/src/runtime-content.ts", "packages/imessage/src/index.ts", "tests/**"] },
+      { "upstream": "packages/imessage/test/**", "target": ["tests/**", "docs/ports/**"] }
+    ],
+    "instructions": {
+      "goal": "Implement and track cloud-provider send/action behavior using the existing Web facade and exact pinned wire contract, including meaningful advanced capabilities where supportable.",
+      "adaptation": ["Read docs/UPSTREAM-COMPATIBILITY.md and docs/COMPATIBILITY-PLAN.md. The baseline is an acknowledged partial port, not a parity certificate; original upstream tests are semantic evidence, not a requirement to reproduce private Node mocks.", "Reuse SpectrumLines, native clients, materialization, builder resolution and app lifetime; do not introduce a second credential inventory or provider framework. Lifecycle/inbound tests are owned by the following policy; their source remains dependency context here.", "Use existing public indexes for exports. Manifests, scripts and gates are protected; any necessary new dependency/package/export-map entry needs an architecture decision in docs/ports and separately approved scope, never verification weakening.", "Do real runtime/test work for supported cases. An impossible capability requires a concrete blocked decision, not fabricated behavior or a blanket documentation-only success."],
+      "nonGoals": ["Other providers, local Apple database/macOS integrations, wholesale framework transplantation or upstream Node transport installation.", "Cache-first getMessage, Node/Bun polyfills, nodejs_compat, copied generated assets or unsupported invented protobuf/wire operations."]
+    }
+  }],
+  "preserve": [
+    "Update current usage and compatibility documentation when behavior changes, while retaining original test attribution, license notices and historical baseline coverage. New support is not evidence that old tests were rebased.",
+    "Preserve existing SDK work and public names/signatures; api, webhooks, imessage and umbrella remain independently usable. Use standard Web APIs and existing binary gRPC-Web/management contracts only.",
+    "One SpectrumLines inventory and app lifetime; authoritative uncached getMessage; canonical phone/space guards; multipart identities; raw Uint8Array; awaited authenticated webhook callbacks; bounded lazy iterators with propagated errors and cancellation.",
+    "Never delete, skip, relax or replace meaningful existing tests to pass. Do not bypass protected boundary/provenance/audit checks through fixtures or production special cases. Keep original tests/upstream-manifest.json pins unchanged; future partial-port links/hashes and executable test mappings go in docs/ports.",
+    "Package manifests, lockfiles, scripts, CI and policy/check/source-audit runners must not change. New dependency/package/export decisions require human approval outside this policy."
+  ],
+  "protectedPaths": [".github/**", "AGENTS.md", "**/AGENTS.md", "CLAUDE.md", "**/CLAUDE.md", "oc-port-agent.json", "ports.json", "ports/**", "scripts/**", "package.json", "**/package.json", "**/pnpm-lock.yaml", "**/package-lock.json", "**/yarn.lock", "**/bun.lock", "**/bun.lockb", "pnpm-workspace.yaml", "**/tsconfig*.json", "**/vitest.config.*", "**/wrangler.*", "**/generated/**", "packages/imessage/proto/**", "packages/api/src/api-routes.ts", "packages/api/src/api-types.ts", "tests/upstream-manifest.json", "tests/upstream/provenance.test.ts", "tests/grpc-codegen.test.ts", "tests/package-boundaries.test.ts", "tests/web-boundary.test.ts", "tests/*boundary*.test.ts", "tests/*audit*.test.ts", "tests/*provenance*.test.ts", "tests/upstream/*audit*", "tests/upstream/*provenance*", "tests/oc-port*", "tests/port-policy*", "docs/COMPATIBILITY-PLAN.md"],
+  "verification": [
+    { "command": "pnpm", "args": ["install", "--frozen-lockfile"], "timeoutSeconds": 300 },
+    { "command": "pnpm", "args": ["pack:all"], "timeoutSeconds": 600 },
+    { "command": "pnpm", "args": ["check:packed"], "timeoutSeconds": 600 }
+  ],
+  "opencode": { "executable": "opencode", "model": "openai/gpt-6.1-sol", "timeoutSeconds": 3600, "maxAttempts": 2, "steps": 150 },
+  "limits": { "maxCommits": 100, "maxContextBytes": 1000000 },
+  "allowSkillEdits": []
+}
